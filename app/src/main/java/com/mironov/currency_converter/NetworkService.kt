@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object NetworkService {
 
     //apiKey=do-not-use-this-api-key-RYzUQylft12X1ohCpEK4c&q=USD_PHP&compact=y
-    private val BASE_URL = "https://free.currconv.com/api/v7/convert?/"
+    private val BASE_URL = "https://free.currconv.com/api/v7/"
     private lateinit var mRetrofit: Retrofit
 
     init {

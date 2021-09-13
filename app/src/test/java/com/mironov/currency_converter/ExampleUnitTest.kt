@@ -15,23 +15,23 @@ import org.junit.Assert.*
 class ExampleUnitTest {
 
 
+    lateinit var gson: Gson;
 
-    lateinit var gson:Gson;
     @Test
-    fun  JsonInnerClass() {
+    fun jsonInnerClassTest() {
         gson = Gson();
-        val json:String="{\"USD_PHP\":{\"val\":49.876016}}"
-       var cr:JsonObject=gson.fromJson(json, object : TypeToken<JsonObject>() {}.type)
+        val json: String = "{\"USD_PHP\":{\"val\":49.876016}}"
+        var cr: JsonObject = gson.fromJson(json, object : TypeToken<JsonObject>() {}.type)
 
         assertEquals(49.876016f, cr.getCurrencyValue()?.getValue())
     }
 
     @Test
-    fun  JsonMap() {
+    fun jsonMapTest() {
         gson = Gson();
-        val json:String="{\"USD_PHP\":{\"val\":49.876016}}"
-        var map= emptyMap<String, CurrencyValue>()
-        map=gson.fromJson(json, object : TypeToken<Map<String, CurrencyValue>>() {}.type)
+        val json: String = "{\"USD_PHP\":{\"val\":49.876016}}"
+        var map = emptyMap<String, CurrencyValue>()
+        map = gson.fromJson(json, object : TypeToken<Map<String, CurrencyValue>>() {}.type)
 
         assertEquals(49.876016f, map.get("USD_PHP")?.getValue())
     }
