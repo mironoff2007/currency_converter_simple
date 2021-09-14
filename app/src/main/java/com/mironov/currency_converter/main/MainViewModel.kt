@@ -18,25 +18,29 @@ class MainViewModel : ViewModel() {
     private val dataRemoteStatus: MutableLiveData<RemoteStatus> = MutableLiveData<RemoteStatus>()
     val viewModelStatus: MutableLiveData<RemoteStatus> = MutableLiveData<RemoteStatus>()
 
-    private var currency: Float = 0f
+    private var currencyRatio: Float = 0f
     private lateinit var curToCur: String
 
     init {
         setupObserver()
     }
 
+    fun convert(curFrom:Float):Float{
+        return curFrom*currencyRatio
+    }
+
     fun initDataShared(context: Context) {
         this.dataShared = DataShared(context)
     }
 
-    fun getCurrency(): Float {
-        return currency
+    fun getCurrencyRatio(): Float {
+        return currencyRatio
     }
 
     fun requestCurrency(curToCur: String, key: String) {
         this.curToCur = curToCur
-        currency = dataShared.getCurrencyRate(curToCur)
-        if (currency == 0f) {
+        currencyRatio = dataShared.getCurrencyRate(curToCur)
+        if (currencyRatio == 0f) {
             dataRemote.getCurrencyFromWeb(curToCur, key)
         } else {
             viewModelStatus.postValue(RemoteStatus.FROM_CACHE)
@@ -47,10 +51,10 @@ class MainViewModel : ViewModel() {
         dataRemote.dataRemoteStatus.observeForever { status ->
             when (status) {
                 RemoteStatus.RESPONSE -> {
-                    currency = dataRemote.getCurrency()
-                    dataShared.saveCurrencyRate(currency, curToCur)
+                    currencyRatio = dataRemote.getCurrency()
+                    dataShared.saveCurrencyRate(currencyRatio, curToCur)
                     viewModelStatus.postValue(RemoteStatus.RESPONSE)
-                    Log.d("My_tag", "cur=" + currency)
+                    Log.d("My_tag", "cur=" + currencyRatio)
                 }
             }
         }

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import com.mironov.currency_converter.R
 import com.mironov.currency_converter.data.RemoteStatus
@@ -16,6 +15,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     lateinit var convertButton: Button
     lateinit var currencyText: TextView
+    lateinit var currencyFrom: EditText
     lateinit var spinnerFrom: Spinner
     lateinit var spinnerTo: Spinner
 
@@ -31,7 +31,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         setContentView(R.layout.activity_main)
 
         convertButton = findViewById(R.id.convert_button)
-        currencyText = findViewById(R.id.currency_text)
+        currencyText = findViewById(R.id.currency_to)
+        currencyFrom = findViewById(R.id.currency_from)
         spinnerFrom = findViewById(R.id.spinnerFrom)
         spinnerTo = findViewById(R.id.spinnerTo)
 
@@ -93,12 +94,15 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         viewModel.viewModelStatus.observe(this) { status ->
             when (status) {
                 RemoteStatus.RESPONSE -> {
-                    currencyRate = viewModel.getCurrency()
-                    currencyText.setText(currencyRate.toString())
+                    var curFromNumb = (currencyFrom.getText().toString()).toFloat()
+                    currencyRate = viewModel.getCurrencyRatio()
+                    currencyText.setText(viewModel.convert(curFromNumb).toString())
                 }
                 RemoteStatus.FROM_CACHE -> {
-                    currencyRate = viewModel.getCurrency()
-                    currencyText.setText(currencyRate.toString() + "From cache")
+                    var curFromNumb = (currencyFrom.getText().toString()).toFloat()
+                    currencyRate = viewModel.getCurrencyRatio()
+                    currencyText.setText(viewModel.convert(curFromNumb).toString())
+                    Toast.makeText(applicationContext, "From cache", Toast.LENGTH_SHORT).show()
                 }
 
             }
