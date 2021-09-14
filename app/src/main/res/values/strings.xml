@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">currency_converter</string>
     <string name="api_key">ae286aaf3f808d07c695</string>
+    <string name="button_convert_name">конвертировать</string>
 </resources>

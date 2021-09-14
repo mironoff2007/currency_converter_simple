@@ -1,5 +1,6 @@
 package com.mironov.currency_converter.data
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.mironov.currency_converter.CurrencyValue
 import com.mironov.currency_converter.NetworkService
