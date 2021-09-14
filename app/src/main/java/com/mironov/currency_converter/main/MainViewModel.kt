@@ -12,13 +12,16 @@ class MainViewModel : ViewModel() {
 
     private val dataRemote: DataRemote by lazy { DataRemote(dataRemoteStatus) }
     private val dataRemoteStatus: MutableLiveData<RemoteStatus> = MutableLiveData<RemoteStatus>()
-
+    val viewModelStatus: MutableLiveData<RemoteStatus> = MutableLiveData<RemoteStatus>()
     private var currency: Float = 0f
 
     init {
         setupObserver()
     }
 
+    fun getCurrency(): Float {
+        return currency
+    }
     fun requestCurrency(curToCur: String, key: String) {
         dataRemote.getCurrencyFromWeb(curToCur, key)
     }
@@ -28,6 +31,7 @@ class MainViewModel : ViewModel() {
             when (status) {
                 RemoteStatus.RESPONSE -> {
                     currency = dataRemote.getCurrency()
+                    viewModelStatus.postValue(RemoteStatus.RESPONSE)
                     Log.d("My_tag", "cur=" + currency)
                 }
             }

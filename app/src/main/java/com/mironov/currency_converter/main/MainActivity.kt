@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import com.mironov.currency_converter.R
+import com.mironov.currency_converter.data.RemoteStatus
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,6 +16,10 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var convertButton: Button
     lateinit var currencyText: TextView
+
+    var currencyRate: Float = 0f
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,9 +29,9 @@ class MainActivity : AppCompatActivity() {
         convertButton = findViewById(R.id.convert_button)
         currencyText = findViewById(R.id.currency_text)
 
-        setupListeners()
-
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        setupListeners()
+        setupObserver()
     }
 
     private fun setupListeners() {
@@ -35,5 +41,16 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun setupObserver() {
+        viewModel.viewModelStatus.observe(this) { status ->
+            when (status) {
+                RemoteStatus.RESPONSE -> {
+                    currencyRate = viewModel.getCurrency()
+                    currencyText.setText(currencyRate.toString())
+                }
+            }
+        }
+
+    }
 
 }
