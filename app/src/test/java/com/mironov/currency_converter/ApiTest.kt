@@ -16,28 +16,14 @@ class ApiTest {
     @Test
     fun getRequestTest() {
 
-        System.out.println("Start")
-       var  cl:Call<Map<String, CurrencyValue>?>?
+        val  call:Call<Map<String, CurrencyValue>?>? = NetworkService.getJSONApi().getCurrencyMap("USD_PHP","y","ae286aaf3f808d07c695")
+        val responce: Response<Map<String, CurrencyValue>?> =call!!.execute()
+        var map:Map<String, CurrencyValue>?=responce.body()
+        var currVal=responce.body()?.get("USD_PHP")?.getValue()
 
-       cl=NetworkService.getJSONApi().getCurrencyMap("USD_PHP","ultra","ae286aaf3f808d07c695")
-            cl!!.enqueue(object : Callback<Map<String, CurrencyValue>?> {
+        System.out.println("Currency="+currVal)
 
-                override fun onResponse(
-                    call: Call<Map<String, CurrencyValue>?>?,
-                    response: Response<Map<String, CurrencyValue>?>?
-                ) {
-                    System.out.println( call?.request()?.url().toString())
-                }
-
-                override fun onFailure(call: Call<Map<String, CurrencyValue>?>, t: Throwable) {
-                    System.out.println(call?.request()?.url().toString())
-                }
-            })
-        //gson = Gson();
-        //val json: String = "{\"USD_PHP\":{\"val\":49.876016}}"
-        //var cr: JsonObject = gson.fromJson(json, object : TypeToken<JsonObject>() {}.type)
-
-        //assertEquals(49.876016f, cr.getCurrencyValue()?.getValue())
+        assertEquals(true, 1< currVal!!)
     }
 
 }
