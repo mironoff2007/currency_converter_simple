@@ -2,24 +2,23 @@ package com.mironov.currency_converter.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
+import android.widget.*
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import com.mironov.currency_converter.R
 import com.mironov.currency_converter.data.RemoteStatus
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private lateinit var viewModel: MainViewModel
 
     lateinit var convertButton: Button
     lateinit var currencyText: TextView
+    lateinit var spinnerFrom: Spinner
 
     var currencyRate: Float = 0f
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,11 +27,32 @@ class MainActivity : AppCompatActivity() {
 
         convertButton = findViewById(R.id.convert_button)
         currencyText = findViewById(R.id.currency_text)
+        spinnerFrom = findViewById(R.id.spinnerFrom)
+
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.initDataShared(applicationContext)
         setupListeners()
         setupObserver()
+
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.currency_variants,
+            android.R.layout.simple_spinner_dropdown_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerFrom.adapter = adapter
+        }
+        spinnerFrom.onItemSelectedListener = this
+
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
+        Log.d("My_tag", parent.getItemAtPosition(pos).toString())
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        TODO("Not yet implemented")
     }
 
     private fun setupListeners() {
