@@ -16,7 +16,7 @@ class DataShared {
 
 
     fun saveCurrencyRate(curToCur: Float, name: String) {
-        editor.putFloat(name, curToCur)
+        editor.putFloat(name, curToCur).apply()
     }
 
     fun getCurrencyRate(name: String): Float {

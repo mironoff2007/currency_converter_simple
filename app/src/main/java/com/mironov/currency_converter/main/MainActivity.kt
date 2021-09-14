@@ -17,8 +17,13 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     lateinit var convertButton: Button
     lateinit var currencyText: TextView
     lateinit var spinnerFrom: Spinner
+    lateinit var spinnerTo: Spinner
+
 
     var currencyRate: Float = 0f
+    lateinit var curToCur: String
+    lateinit var curTo: String
+    lateinit var curFrom: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,13 +33,18 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         convertButton = findViewById(R.id.convert_button)
         currencyText = findViewById(R.id.currency_text)
         spinnerFrom = findViewById(R.id.spinnerFrom)
-
+        spinnerTo = findViewById(R.id.spinnerTo)
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.initDataShared(applicationContext)
         setupListeners()
         setupObserver()
+        initSpinerAdapters()
 
+    }
+
+    private fun initSpinerAdapters() {
+        //Spinner From
         ArrayAdapter.createFromResource(
             this,
             R.array.currency_variants,
@@ -45,19 +55,36 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         }
         spinnerFrom.onItemSelectedListener = this
 
+        //Spinner To
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.currency_variants,
+            android.R.layout.simple_spinner_dropdown_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerTo.adapter = adapter
+        }
+        spinnerTo.onItemSelectedListener = this
     }
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
-        Log.d("My_tag", parent.getItemAtPosition(pos).toString())
+        if (parent.getId() == R.id.spinnerFrom) {
+            curFrom = parent.getItemAtPosition(pos).toString()
+            Log.d("My_tag", "From-" + parent.getItemAtPosition(pos).toString())
+        } else {
+            curTo = parent.getItemAtPosition(pos).toString()
+            Log.d("My_tag", "To-" + parent.getItemAtPosition(pos).toString())
+        }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        TODO("Not yet implemented")
+        curFrom = "USD"
+        curTo = "USD"
     }
 
     private fun setupListeners() {
         convertButton.setOnClickListener { v: View? ->
-            viewModel.requestCurrency("USD_RUB", resources.getString(R.string.api_key))
+            viewModel.requestCurrency(curFrom + "_" + curTo, resources.getString(R.string.api_key))
         }
 
     }

@@ -12,6 +12,12 @@
         android:layout_height="wrap_content"
         android:layout_weight="3" />
 
+    <Spinner
+        android:id="@+id/spinnerTo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="3" />
+
     <TextView
         android:id="@+id/currency_text"
         android:layout_width="wrap_content"
