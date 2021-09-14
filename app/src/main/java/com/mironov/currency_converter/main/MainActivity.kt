@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         currencyText = findViewById(R.id.currency_text)
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel.initDataShared(applicationContext)
         setupListeners()
         setupObserver()
     }
@@ -48,6 +49,11 @@ class MainActivity : AppCompatActivity() {
                     currencyRate = viewModel.getCurrency()
                     currencyText.setText(currencyRate.toString())
                 }
+                RemoteStatus.FROM_CACHE -> {
+                    currencyRate = viewModel.getCurrency()
+                    currencyText.setText(currencyRate.toString() + "From cache")
+                }
+
             }
         }
 
