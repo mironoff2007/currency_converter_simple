@@ -7,6 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.mironov.currency_converter.R
 import com.mironov.currency_converter.data.RemoteStatus
+import android.text.Editable
+
+import android.text.TextWatcher
+
+
+
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
@@ -28,14 +34,35 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initViews()
+
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.initDataShared(applicationContext)
-        setupListeners()
+
+        initViews()
+        addEditTextListener()
+        setupButtonsListeners()
         setupObserver()
         initSpinerAdapters()
 
+    }
+
+    private fun addEditTextListener() {
+        currencyFrom.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                convertButton.setEnabled(false)
+            }
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.toString().length == 0) {
+                    convertButton.setEnabled(false)
+                }
+                else{
+                    convertButton.setEnabled(true)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable) {}
+        })
     }
 
     private fun initViews() {
@@ -44,6 +71,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         currencyFrom = findViewById(R.id.currency_from)
         spinnerFrom = findViewById(R.id.spinnerFrom)
         spinnerTo = findViewById(R.id.spinnerTo)
+        convertButton.setEnabled(false)
     }
 
     private fun initSpinerAdapters() {
@@ -83,7 +111,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         curTo = "USD"
     }
 
-    private fun setupListeners() {
+    private fun setupButtonsListeners() {
         convertButton.setOnClickListener { v: View? ->
             viewModel.requestCurrency(curFrom + "_" + curTo, resources.getString(R.string.api_key))
         }
