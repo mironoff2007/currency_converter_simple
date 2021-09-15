@@ -102,10 +102,10 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                     var curFromNumb = (currencyFrom.getText().toString()).toFloat()
                     currencyRate = viewModel.getCurrencyRatio()
                     currencyText.setText(viewModel.convert(curFromNumb).toString())
-                    Toast.makeText(applicationContext, R.string.error, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, R.string.from_cache, Toast.LENGTH_SHORT).show()
                 }
                 RemoteStatus.ERROR -> {
-                    Toast.makeText(applicationContext, R.string.from_cache, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, R.string.error, Toast.LENGTH_SHORT).show()
                 }
 
             }
