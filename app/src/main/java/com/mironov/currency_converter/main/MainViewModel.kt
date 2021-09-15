@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.mironov.currency_converter.data.DataRemote
 import com.mironov.currency_converter.data.DataShared
 import com.mironov.currency_converter.data.RemoteStatus
+import kotlin.math.roundToInt
 
 class MainViewModel : ViewModel() {
 
@@ -56,6 +57,15 @@ class MainViewModel : ViewModel() {
                     viewModelStatus.postValue(RemoteStatus.ERROR)
                 }
             }
+        }
+    }
+
+    fun formatFloatToString(numb:Float):String{
+        if(numb>99.99){
+           return numb.roundToInt().toString()
+        }
+        else{
+            return "%.2f".format(numb)
         }
     }
 }
