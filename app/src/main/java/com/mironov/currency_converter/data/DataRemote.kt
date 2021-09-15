@@ -1,6 +1,5 @@
 package com.mironov.currency_converter.data
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.mironov.currency_converter.CurrencyValue
 import com.mironov.currency_converter.NetworkService
@@ -21,8 +20,13 @@ class DataRemote(var dataRemoteStatus: MutableLiveData<RemoteStatus>) {
                     call: Call<Map<String, CurrencyValue>?>,
                     response: Response<Map<String, CurrencyValue>?>
                 ) {
-                    currency = response.body()?.get(curToCur)?.getValue() ?: 0f
-                    dataRemoteStatus.postValue(RemoteStatus.RESPONSE)
+                    if (response.body()==null){
+                        dataRemoteStatus.postValue(RemoteStatus.ERROR)
+                    }
+                    else {
+                        currency = response.body()!![curToCur]!!.getValue() ?: 0f
+                        dataRemoteStatus.postValue(RemoteStatus.RESPONSE)
+                    }
                 }
 
                 override fun onFailure(call: Call<Map<String, CurrencyValue>?>, t: Throwable) {

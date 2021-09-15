@@ -1,9 +1,6 @@
 package com.mironov.currency_converter.main
 
 import android.content.Context
-import android.util.Log
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mironov.currency_converter.data.DataRemote
@@ -54,11 +51,12 @@ class MainViewModel : ViewModel() {
                     currencyRatio = dataRemote.getCurrency()
                     dataShared.saveCurrencyRate(currencyRatio, curToCur)
                     viewModelStatus.postValue(RemoteStatus.RESPONSE)
-                    Log.d("My_tag", "cur=" + currencyRatio)
+                }
+                RemoteStatus.ERROR ->{
+                    viewModelStatus.postValue(RemoteStatus.ERROR)
                 }
             }
         }
-
     }
 }
 

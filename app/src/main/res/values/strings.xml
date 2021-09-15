@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">currency_converter</string>
+    <string name="error">ошибка</string>
+    <string name="from_cache">из кэша</string>
     <string name="api_key">ae286aaf3f808d07c695</string>
     <string name="button_convert_name">конвертировать</string>
     <string-array name="currency_variants">

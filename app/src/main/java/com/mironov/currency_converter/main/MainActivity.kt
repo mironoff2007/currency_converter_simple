@@ -1,10 +1,9 @@
 package com.mironov.currency_converter.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.mironov.currency_converter.R
 import com.mironov.currency_converter.data.RemoteStatus
@@ -21,7 +20,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
 
     var currencyRate: Float = 0f
-    lateinit var curToCur: String
     lateinit var curTo: String
     lateinit var curFrom: String
 
@@ -30,11 +28,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        convertButton = findViewById(R.id.convert_button)
-        currencyText = findViewById(R.id.currency_to)
-        currencyFrom = findViewById(R.id.currency_from)
-        spinnerFrom = findViewById(R.id.spinnerFrom)
-        spinnerTo = findViewById(R.id.spinnerTo)
+        initViews()
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.initDataShared(applicationContext)
@@ -42,6 +36,14 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         setupObserver()
         initSpinerAdapters()
 
+    }
+
+    private fun initViews() {
+        convertButton = findViewById(R.id.convert_button)
+        currencyText = findViewById(R.id.currency_to)
+        currencyFrom = findViewById(R.id.currency_from)
+        spinnerFrom = findViewById(R.id.spinnerFrom)
+        spinnerTo = findViewById(R.id.spinnerTo)
     }
 
     private fun initSpinerAdapters() {
@@ -71,10 +73,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
         if (parent.getId() == R.id.spinnerFrom) {
             curFrom = parent.getItemAtPosition(pos).toString()
-            Log.d("My_tag", "From-" + parent.getItemAtPosition(pos).toString())
         } else {
             curTo = parent.getItemAtPosition(pos).toString()
-            Log.d("My_tag", "To-" + parent.getItemAtPosition(pos).toString())
         }
     }
 
@@ -102,7 +102,10 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                     var curFromNumb = (currencyFrom.getText().toString()).toFloat()
                     currencyRate = viewModel.getCurrencyRatio()
                     currencyText.setText(viewModel.convert(curFromNumb).toString())
-                    Toast.makeText(applicationContext, "From cache", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, R.string.error, Toast.LENGTH_SHORT).show()
+                }
+                RemoteStatus.ERROR -> {
+                    Toast.makeText(applicationContext, R.string.from_cache, Toast.LENGTH_SHORT).show()
                 }
 
             }
