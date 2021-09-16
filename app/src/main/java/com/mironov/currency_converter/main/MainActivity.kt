@@ -107,11 +107,13 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         spinnerFrom.setOnItemSelectedListener(object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
                 if (isUserInteracting) {
-
+                    curFrom = string_array[i]
                 }
             }
 
-            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {
+                curFrom="USD"
+            }
         })
 
 
@@ -131,9 +133,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
         if (parent.id == R.id.spinnerFrom) {
-           // curFrom = parent.getItemAtPosition(pos).toString()
+           curFrom = parent.getItemAtPosition(pos).toString()
         } else {
-           // curTo = parent.getItemAtPosition(pos).toString()
+           curTo = parent.getItemAtPosition(pos).toString()
         }
     }
 

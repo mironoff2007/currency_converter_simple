@@ -34,7 +34,7 @@ class CustomAdapter(
         if (convertView == null) {
             val mInflater =
                 mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertView = mInflater.inflate(R.layout.custom_spinner_row, parent, false)
+            convertView = mInflater.inflate(R.layout.custom_spinner_row, null, false)
             mViewHolder.mFlag = convertView.findViewById<View>(R.id.ivFlag) as ImageView
             mViewHolder.mName = convertView.findViewById<View>(R.id.tvName) as TextView
             convertView.tag = mViewHolder
