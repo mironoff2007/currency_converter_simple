@@ -21,6 +21,7 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.core.view.get
+import androidx.core.view.isVisible
 
 
 class MainActivity : AppCompatActivity() {
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var currencyFrom: EditText
     lateinit var spinnerFrom: Spinner
     lateinit var spinnerTo: Spinner
+    lateinit var progressBar: ProgressBar
 
 
     var currencyRate: Float = 0f
@@ -80,6 +82,7 @@ class MainActivity : AppCompatActivity() {
         currencyFrom = findViewById(R.id.currency_from)
         spinnerFrom = findViewById(R.id.spinnerFrom)
         spinnerTo = findViewById(R.id.spinnerTo)
+        progressBar = findViewById(R.id.progressBar)
         convertButton.isEnabled = false
     }
 
@@ -120,29 +123,6 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    /*
-    override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
-        if (parent.id == R.id.spinnerFrom) {
-            //Log.d("My_tag","selItem="+spinnerFrom.selectedItem )
-            //var p=parent as
-
-            var lay:LinearLayout=view as LinearLayout
-            var textV:TextView =lay.getChildAt(1)as TextView
-            curFrom= textV.text.toString()
-            Log.d("My_tag",curFrom)
-            var adapter: AppCompatSpinner =parent  as AppCompatSpinner
-            Log.d("My_tag","atPos="+ adapter.getItemAtPosition(pos))
-            Log.d("My_tag","veiw="+view )
-           //curFrom = parent
-        } else {
-           curTo = parent.getItemAtPosition(pos).toString()
-        }
-     }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        curTo = "USD"
-    }
-    */
     private fun setupButtonsListeners() {
         convertButton.setOnClickListener { v: View? ->
             viewModel.requestCurrency(curFrom + "_" + curTo, resources.getString(R.string.api_key))
@@ -154,20 +134,28 @@ class MainActivity : AppCompatActivity() {
         viewModel.viewModelStatus.observe(this) { status ->
             when (status) {
                 RemoteStatus.RESPONSE -> {
+                    progressBar.visibility = View.INVISIBLE
                     var curFromNumb = (currencyFrom.text.toString()).toFloat()
                     currencyRate = viewModel.getCurrencyRatio()
-                    currencyText.text = viewModel.formatFloatToString(viewModel.convert(curFromNumb))
+                    currencyText.text =
+                        viewModel.formatFloatToString(viewModel.convert(curFromNumb))
                 }
                 RemoteStatus.FROM_CACHE -> {
+                    progressBar.visibility = View.INVISIBLE
                     var curFromNumb = (currencyFrom.text.toString()).toFloat()
                     currencyRate = viewModel.getCurrencyRatio()
-                    currencyText.text = viewModel.formatFloatToString(viewModel.convert(curFromNumb))
-                    Toast.makeText(applicationContext, R.string.from_cache, Toast.LENGTH_SHORT).show()
+                    currencyText.text =
+                        viewModel.formatFloatToString(viewModel.convert(curFromNumb))
+                    Toast.makeText(applicationContext, R.string.from_cache, Toast.LENGTH_SHORT)
+                        .show()
                 }
                 RemoteStatus.ERROR -> {
+                    progressBar.visibility = View.INVISIBLE
                     Toast.makeText(applicationContext, R.string.error, Toast.LENGTH_SHORT).show()
                 }
-
+                RemoteStatus.LOADING -> {
+                    progressBar.visibility = View.VISIBLE
+                }
             }
         }
 
