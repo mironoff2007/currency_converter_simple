@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.mironov.currency_converter.R
 import com.mironov.currency_converter.data.RemoteStatus
 import android.text.Editable
+import android.text.Layout
 
 import android.text.TextWatcher
+import android.util.Log
 import com.mironov.currency_converter.CustomAdapter
 import java.util.*
 import kotlin.collections.ArrayList
@@ -17,12 +19,11 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatSpinner
+import androidx.core.view.get
 
 
-
-
-
-class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainViewModel
 
@@ -93,15 +94,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         val mCustomAdapter =
             CustomAdapter(this@MainActivity, string_array, spinnerImages)
         //Spinner From
-        /*
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.currency_variants,
-            android.R.layout.simple_spinner_dropdown_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinnerFrom.adapter = adapter
-        }*/
         spinnerFrom.adapter = mCustomAdapter
         spinnerFrom.setOnItemSelectedListener(object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
@@ -113,33 +105,44 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             }
         })
 
-
         //spinnerFrom.onItemSelectedListener = this
 
         //Spinner To
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.currency_variants,
-            android.R.layout.simple_spinner_dropdown_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinnerTo.adapter = adapter
-        }
-        spinnerTo.onItemSelectedListener = this
+        spinnerTo.adapter = mCustomAdapter
+        spinnerTo.setOnItemSelectedListener(object : OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
+                curTo = string_array[i]
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {
+                curTo = "USD"
+            }
+        })
     }
 
+    /*
     override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
         if (parent.id == R.id.spinnerFrom) {
-           curFrom = parent.getItemAtPosition(pos).toString()
+            //Log.d("My_tag","selItem="+spinnerFrom.selectedItem )
+            //var p=parent as
+
+            var lay:LinearLayout=view as LinearLayout
+            var textV:TextView =lay.getChildAt(1)as TextView
+            curFrom= textV.text.toString()
+            Log.d("My_tag",curFrom)
+            var adapter: AppCompatSpinner =parent  as AppCompatSpinner
+            Log.d("My_tag","atPos="+ adapter.getItemAtPosition(pos))
+            Log.d("My_tag","veiw="+view )
+           //curFrom = parent
         } else {
            curTo = parent.getItemAtPosition(pos).toString()
         }
-    }
+     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
         curTo = "USD"
     }
-
+    */
     private fun setupButtonsListeners() {
         convertButton.setOnClickListener { v: View? ->
             viewModel.requestCurrency(curFrom + "_" + curTo, resources.getString(R.string.api_key))

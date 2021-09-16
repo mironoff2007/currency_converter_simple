@@ -16,7 +16,7 @@ class CustomAdapter(
     images: IntArray,
 ) : ArrayAdapter<String?>(context, R.layout.custom_spinner_row) {
 
-    var spinnerTitles: Array<String>
+    public var spinnerTitles: Array<String>
     var spinnerImages: IntArray
     var mContext: Context
 
@@ -26,6 +26,10 @@ class CustomAdapter(
 
     override fun getCount(): Int {
         return spinnerTitles.size
+    }
+
+    fun getArrayString(): Array<String> {
+        return spinnerTitles
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
