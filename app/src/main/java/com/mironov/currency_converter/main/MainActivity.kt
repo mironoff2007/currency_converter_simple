@@ -36,8 +36,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     var currencyRate: Float = 0f
     lateinit var curTo: String
     lateinit var curFrom: String
-
-    private var isUserInteracting = false
+    
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,9 +105,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         spinnerFrom.adapter = mCustomAdapter
         spinnerFrom.setOnItemSelectedListener(object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
-                if (isUserInteracting) {
                     curFrom = string_array[i]
-                }
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {
@@ -140,7 +137,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        curFrom = "USD"
         curTo = "USD"
     }
 
@@ -172,9 +168,5 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             }
         }
 
-    }
-    override fun onUserInteraction() {
-        super.onUserInteraction()
-        isUserInteracting = true
     }
 }
