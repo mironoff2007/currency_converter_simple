@@ -10,6 +10,14 @@ import com.mironov.currency_converter.data.RemoteStatus
 import android.text.Editable
 
 import android.text.TextWatcher
+import com.mironov.currency_converter.CustomAdapter
+import java.util.*
+import kotlin.collections.ArrayList
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
+
+import android.widget.Toast
+
 
 
 
@@ -29,6 +37,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     lateinit var curTo: String
     lateinit var curFrom: String
 
+    private var isUserInteracting = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,14 +59,14 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private fun addEditTextListener() {
         currencyFrom.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                convertButton.setEnabled(false)
+                convertButton.isEnabled = false
             }
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.toString().length == 0) {
-                    convertButton.setEnabled(false)
+                    convertButton.isEnabled = false
                 }
                 else{
-                    convertButton.setEnabled(true)
+                    convertButton.isEnabled = true
                 }
             }
 
@@ -71,11 +80,21 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         currencyFrom = findViewById(R.id.currency_from)
         spinnerFrom = findViewById(R.id.spinnerFrom)
         spinnerTo = findViewById(R.id.spinnerTo)
-        convertButton.setEnabled(false)
+        convertButton.isEnabled = false
     }
 
     private fun initSpinerAdapters() {
+        var spinnerImages = intArrayOf(
+            R.drawable.ic_usa,
+            R.drawable.ic_rus,
+            R.drawable.ic_eur,
+            R.drawable.ic_php
+        )
+        val string_array: Array<String> = resources.getStringArray(R.array.currency_variants)
+        val mCustomAdapter =
+            CustomAdapter(this@MainActivity, string_array, spinnerImages)
         //Spinner From
+        /*
         ArrayAdapter.createFromResource(
             this,
             R.array.currency_variants,
@@ -83,8 +102,20 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerFrom.adapter = adapter
-        }
-        spinnerFrom.onItemSelectedListener = this
+        }*/
+        spinnerFrom.adapter = mCustomAdapter
+        spinnerFrom.setOnItemSelectedListener(object : OnItemSelectedListener {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
+                if (isUserInteracting) {
+
+                }
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        })
+
+
+        //spinnerFrom.onItemSelectedListener = this
 
         //Spinner To
         ArrayAdapter.createFromResource(
@@ -99,10 +130,10 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
-        if (parent.getId() == R.id.spinnerFrom) {
-            curFrom = parent.getItemAtPosition(pos).toString()
+        if (parent.id == R.id.spinnerFrom) {
+           // curFrom = parent.getItemAtPosition(pos).toString()
         } else {
-            curTo = parent.getItemAtPosition(pos).toString()
+           // curTo = parent.getItemAtPosition(pos).toString()
         }
     }
 
@@ -122,14 +153,14 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         viewModel.viewModelStatus.observe(this) { status ->
             when (status) {
                 RemoteStatus.RESPONSE -> {
-                    var curFromNumb = (currencyFrom.getText().toString()).toFloat()
+                    var curFromNumb = (currencyFrom.text.toString()).toFloat()
                     currencyRate = viewModel.getCurrencyRatio()
-                    currencyText.setText(viewModel.formatFloatToString(viewModel.convert(curFromNumb)))
+                    currencyText.text = viewModel.formatFloatToString(viewModel.convert(curFromNumb))
                 }
                 RemoteStatus.FROM_CACHE -> {
-                    var curFromNumb = (currencyFrom.getText().toString()).toFloat()
+                    var curFromNumb = (currencyFrom.text.toString()).toFloat()
                     currencyRate = viewModel.getCurrencyRatio()
-                    currencyText.setText(viewModel.formatFloatToString(viewModel.convert(curFromNumb)))
+                    currencyText.text = viewModel.formatFloatToString(viewModel.convert(curFromNumb))
                     Toast.makeText(applicationContext, R.string.from_cache, Toast.LENGTH_SHORT).show()
                 }
                 RemoteStatus.ERROR -> {
@@ -140,5 +171,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         }
 
     }
-
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        isUserInteracting = true
+    }
 }
