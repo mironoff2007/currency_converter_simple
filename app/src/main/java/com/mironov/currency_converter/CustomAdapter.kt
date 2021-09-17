@@ -1,7 +1,7 @@
-package com.mironov.currency_converter;
+package com.mironov.currency_converter
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,9 +16,9 @@ class CustomAdapter(
     images: IntArray,
 ) : ArrayAdapter<String?>(context, R.layout.custom_spinner_row) {
 
-    public var spinnerTitles: Array<String>
-    var spinnerImages: IntArray
-    var mContext: Context
+    var spinnerTitles: Array<String> = titles
+    var spinnerImages: IntArray = images
+    var mContext: Context = context
 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         return getView(position, convertView, parent)
@@ -28,10 +28,7 @@ class CustomAdapter(
         return spinnerTitles.size
     }
 
-    fun getArrayString(): Array<String> {
-        return spinnerTitles
-    }
-
+    @SuppressLint("InflateParams")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
         var mViewHolder = ViewHolder()
@@ -56,9 +53,4 @@ class CustomAdapter(
 
     }
 
-    init {
-        spinnerTitles = titles
-        spinnerImages = images
-        mContext = context
-    }
 }

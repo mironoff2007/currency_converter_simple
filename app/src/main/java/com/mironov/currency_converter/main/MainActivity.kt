@@ -1,27 +1,17 @@
 package com.mironov.currency_converter.main
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.mironov.currency_converter.CustomAdapter
 import com.mironov.currency_converter.R
 import com.mironov.currency_converter.data.RemoteStatus
-import android.text.Editable
-import android.text.Layout
-
-import android.text.TextWatcher
-import android.util.Log
-import com.mironov.currency_converter.CustomAdapter
 import java.util.*
-import kotlin.collections.ArrayList
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
-
-import android.widget.Toast
-import androidx.appcompat.widget.AppCompatSpinner
-import androidx.core.view.get
-import androidx.core.view.isVisible
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,17 +19,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
 
     lateinit var convertButton: Button
-    lateinit var currencyText: TextView
-    lateinit var currencyFrom: EditText
-    lateinit var spinnerFrom: Spinner
-    lateinit var spinnerTo: Spinner
-    lateinit var progressBar: ProgressBar
+    private lateinit var currencyText: TextView
+    private lateinit var currencyFrom: EditText
+    private lateinit var spinnerFrom: Spinner
+    private lateinit var spinnerTo: Spinner
+    private lateinit var progressBar: ProgressBar
 
 
-    var currencyRate: Float = 0f
+    private var currencyRate: Float = 0f
     lateinit var curTo: String
     lateinit var curFrom: String
-    
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         addEditTextListener()
         setupButtonsListeners()
         setupObserver()
-        initSpinerAdapters()
+        initSpinnerAdapters()
 
     }
 
@@ -63,13 +53,9 @@ class MainActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 convertButton.isEnabled = false
             }
+
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.toString().length == 0) {
-                    convertButton.isEnabled = false
-                }
-                else{
-                    convertButton.isEnabled = true
-                }
+                convertButton.isEnabled = s.toString().isNotEmpty()
             }
 
             override fun afterTextChanged(s: Editable) {}
@@ -86,63 +72,62 @@ class MainActivity : AppCompatActivity() {
         convertButton.isEnabled = false
     }
 
-    private fun initSpinerAdapters() {
-        var spinnerImages = intArrayOf(
+    private fun initSpinnerAdapters() {
+        val spinnerImages = intArrayOf(
             R.drawable.ic_usa,
             R.drawable.ic_rus,
             R.drawable.ic_eur,
             R.drawable.ic_php
         )
-        val string_array: Array<String> = resources.getStringArray(R.array.currency_variants)
+        val stringArray = resources.getStringArray(R.array.currency_variants)
         val mCustomAdapter =
-            CustomAdapter(this@MainActivity, string_array, spinnerImages)
+            CustomAdapter(this@MainActivity, stringArray, spinnerImages)
         //Spinner From
         spinnerFrom.adapter = mCustomAdapter
-        spinnerFrom.setOnItemSelectedListener(object : OnItemSelectedListener {
+        spinnerFrom.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
-                    curFrom = string_array[i]
+                curFrom = stringArray[i]
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {
-                curFrom="USD"
+                curFrom = "USD"
             }
-        })
-
-        //spinnerFrom.onItemSelectedListener = this
+        }
 
         //Spinner To
         spinnerTo.adapter = mCustomAdapter
-        spinnerTo.setOnItemSelectedListener(object : OnItemSelectedListener {
+        spinnerTo.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
-                curTo = string_array[i]
+                curTo = stringArray[i]
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {
                 curTo = "USD"
             }
-        })
+        }
     }
 
     private fun setupButtonsListeners() {
         convertButton.setOnClickListener { v: View? ->
+            progressBar.visibility = View.VISIBLE
             viewModel.requestCurrency(curFrom + "_" + curTo, resources.getString(R.string.api_key))
         }
 
     }
 
     private fun setupObserver() {
-        viewModel.viewModelStatus.observe(this) { status ->
-            when (status) {
+        viewModel.viewModelStatus.observe(this) {
+            when (it) {
                 RemoteStatus.RESPONSE -> {
                     progressBar.visibility = View.INVISIBLE
-                    var curFromNumb = (currencyFrom.text.toString()).toFloat()
+                    val curFromNumb = (currencyFrom.text.toString()).toFloat()
                     currencyRate = viewModel.getCurrencyRatio()
                     currencyText.text =
                         viewModel.formatFloatToString(viewModel.convert(curFromNumb))
                 }
                 RemoteStatus.FROM_CACHE -> {
                     progressBar.visibility = View.INVISIBLE
-                    var curFromNumb = (currencyFrom.text.toString()).toFloat()
+                    val curFromNumb = (currencyFrom.text.toString()).toFloat()
                     currencyRate = viewModel.getCurrencyRatio()
                     currencyText.text =
                         viewModel.formatFloatToString(viewModel.convert(curFromNumb))

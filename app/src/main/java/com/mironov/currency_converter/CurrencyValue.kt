@@ -1,8 +1,10 @@
 package com.mironov.currency_converter
-import com.google.gson.annotations.SerializedName;
+
+import com.google.gson.annotations.SerializedName
+
 class CurrencyValue {
     @SerializedName("val")
-    private var value: Float= 0F
+    private var value: Float = 0F
 
     fun getValue(): Float {
         return value

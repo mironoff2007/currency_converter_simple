@@ -1,6 +1,5 @@
 package com.mironov.currency_converter
 
-import mironov.random_gif.CurrencyApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -14,8 +13,8 @@ object NetworkService {
         .build()
 
 
-    fun getJSONApi():CurrencyApi  {
-        return mRetrofit.create<CurrencyApi>(CurrencyApi::class.java)
+    fun getJSONApi(): CurrencyApi {
+        return mRetrofit.create(CurrencyApi::class.java)
     }
 
 }

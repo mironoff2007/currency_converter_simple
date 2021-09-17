@@ -3,17 +3,10 @@ package com.mironov.currency_converter.data
 import android.content.Context
 import android.content.SharedPreferences
 
+class DataShared(context: Context) {
 
-class DataShared {
-
-    val pref: SharedPreferences
-    val editor: SharedPreferences.Editor
-
-    constructor(context: Context) {
-        pref = context.getSharedPreferences("Cache", Context.MODE_PRIVATE)
-        editor = pref.edit();
-    }
-
+    private val pref: SharedPreferences = context.getSharedPreferences("Cache", Context.MODE_PRIVATE)
+    private val editor: SharedPreferences.Editor = pref.edit()
 
     fun saveCurrencyRate(curToCur: Float, name: String) {
         editor.putFloat(name, curToCur).apply()

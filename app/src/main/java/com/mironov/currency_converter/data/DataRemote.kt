@@ -20,11 +20,10 @@ class DataRemote(var dataRemoteStatus: MutableLiveData<RemoteStatus>) {
                     call: Call<Map<String, CurrencyValue>?>,
                     response: Response<Map<String, CurrencyValue>?>
                 ) {
-                    if (response.body()==null){
+                    if (response.body() == null) {
                         dataRemoteStatus.postValue(RemoteStatus.ERROR)
-                    }
-                    else {
-                        currency = response.body()!![curToCur]!!.getValue() ?: 0f
+                    } else {
+                        currency = response.body()!![curToCur]!!.getValue()
                         dataRemoteStatus.postValue(RemoteStatus.RESPONSE)
                     }
                 }
@@ -35,7 +34,7 @@ class DataRemote(var dataRemoteStatus: MutableLiveData<RemoteStatus>) {
             })
     }
 
-    fun getCurrency():Float{
+    fun getCurrency(): Float {
         return currency
     }
 }
