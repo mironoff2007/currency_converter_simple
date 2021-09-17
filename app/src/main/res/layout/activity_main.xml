@@ -53,33 +53,21 @@
             android:textAlignment="center" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
         <Button
             android:id="@+id/convert_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0"
             android:text="@string/button_convert_name"
             android:textAlignment="center" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="invisible"
-            android:layout_weight="1" />
-    </LinearLayout>
-
+            android:layout_weight="0" />
 
 </LinearLayout>
