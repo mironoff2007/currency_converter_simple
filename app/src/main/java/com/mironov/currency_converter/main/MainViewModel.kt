@@ -37,12 +37,7 @@ class MainViewModel : ViewModel() {
 
     fun requestCurrency(curToCur: String, key: String) {
         this.curToCur = curToCur
-        currencyRatio = dataShared.getCurrencyRate(curToCur)
-        if (currencyRatio == 0f) {
-            dataRemote.getCurrencyFromWeb(curToCur, key)
-        } else {
-            viewModelStatus.postValue(RemoteStatus.FROM_CACHE)
-        }
+        dataRemote.getCurrencyFromWeb(curToCur, key)
     }
 
     private fun setupObserver() {
@@ -53,8 +48,14 @@ class MainViewModel : ViewModel() {
                     dataShared.saveCurrencyRate(currencyRatio, curToCur)
                     viewModelStatus.postValue(RemoteStatus.RESPONSE)
                 }
-                RemoteStatus.ERROR ->{
-                    viewModelStatus.postValue(RemoteStatus.ERROR)
+                RemoteStatus.ERROR -> {
+                    currencyRatio = dataShared.getCurrencyRate(curToCur)
+                    if (currencyRatio == 0f) {
+                        viewModelStatus.postValue(RemoteStatus.ERROR)
+                    } else {
+                        viewModelStatus.postValue(RemoteStatus.FROM_CACHE)
+                    }
+
                 }
             }
         }
