@@ -28,8 +28,8 @@ class MainActivity : AppCompatActivity() {
 
 
     private var currencyRate: Float = 0f
-    lateinit var curTo: String
-    lateinit var curFrom: String
+    var curTo: String? = null
+    var curFrom: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,8 +91,10 @@ class MainActivity : AppCompatActivity() {
                 i: Int,
                 l: Long
             ) {
+                if (curFrom != null) {
+                    currencyText.setText("-")
+                }
                 curFrom = stringArray[i]
-                currencyText.setText("-")
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {
@@ -109,8 +111,10 @@ class MainActivity : AppCompatActivity() {
                 i: Int,
                 l: Long
             ) {
+                if (curTo != null) {
+                    currencyText.setText("-")
+                }
                 curTo = stringArray[i]
-                currencyText.setText("-")
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {
