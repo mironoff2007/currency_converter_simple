@@ -92,6 +92,7 @@ class MainActivity : AppCompatActivity() {
                 l: Long
             ) {
                 curFrom = stringArray[i]
+                currencyText.setText("-")
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {
@@ -109,6 +110,7 @@ class MainActivity : AppCompatActivity() {
                 l: Long
             ) {
                 curTo = stringArray[i]
+                currencyText.setText("-")
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {
