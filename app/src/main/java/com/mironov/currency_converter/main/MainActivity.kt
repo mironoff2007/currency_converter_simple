@@ -30,17 +30,10 @@ class MainActivity : AppCompatActivity() {
     private var currencyRate: Float = 0f
     lateinit var curTo: String
     lateinit var curFrom: String
-    val curNamesMap: HashMap<String, Int> = object : HashMap<String, Int>(){}
-
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.initDataShared(applicationContext)
@@ -87,12 +80,6 @@ class MainActivity : AppCompatActivity() {
 
 
         val stringArray = resources.getStringArray(R.array.currency_variants)
-        val counter = AtomicInteger(0)
-
-        stringArray.forEach { str ->
-            curNamesMap[str] = counter.getAndIncrement()
-        }
-
         val mCustomAdapter =
             CustomAdapter(this@MainActivity, stringArray, spinnerImages)
         //Spinner From
@@ -165,11 +152,6 @@ class MainActivity : AppCompatActivity() {
                     progressBar.visibility = View.VISIBLE
                 }
                 RemoteStatus.DESTROY -> {
-                    if(viewModel.getCurrenciesNames()!=null){
-                    curFrom = viewModel.getCurrenciesNames()!!.substringBefore("_")
-                    curTo = viewModel.getCurrenciesNames()!!.substringAfter("_")
-                    spinnerFrom.setSelection(curNamesMap[curFrom]!!)
-                    spinnerTo.setSelection(curNamesMap[curTo]!!)}
 
                 }
             }
@@ -180,5 +162,22 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.setDestroyStatus()
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        currencyText.text = savedInstanceState?.getString("CALCULATED_CUR")
+        spinnerFrom.setSelection(savedInstanceState?.getInt("SPINNER_CUR_FROM"))
+        spinnerTo.setSelection(savedInstanceState?.getInt("SPINNER_CUR_TO"))
+        currencyFrom.setText(savedInstanceState?.getString("VAL_CUR_FROM"))
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState?.run {
+            putString("CALCULATED_CUR", currencyText.text.toString())
+            putInt("SPINNER_CUR_FROM", spinnerFrom.selectedItemPosition)
+            putInt("SPINNER_CUR_TO", spinnerTo.selectedItemPosition)
+            putString("VAL_CUR_FROM", currencyFrom.text.toString())
+        }
+        super.onSaveInstanceState(outState)
     }
 }
