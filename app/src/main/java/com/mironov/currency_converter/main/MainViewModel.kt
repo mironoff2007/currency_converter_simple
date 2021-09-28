@@ -17,7 +17,7 @@ class MainViewModel : ViewModel() {
     val viewModelStatus: MutableLiveData<RemoteStatus> = MutableLiveData<RemoteStatus>()
 
     private var currencyRatio: Float = 0f
-    private lateinit var curToCur: String
+    private var curToCur: String? =null
 
     init {
         setupObserver()
@@ -34,6 +34,9 @@ class MainViewModel : ViewModel() {
     fun getCurrencyRatio(): Float {
         return currencyRatio
     }
+    fun getCurrenciesNames(): String? {
+        return curToCur
+    }
 
     fun requestCurrency(curToCur: String, key: String) {
         this.curToCur = curToCur
@@ -45,11 +48,11 @@ class MainViewModel : ViewModel() {
             when (status) {
                 RemoteStatus.RESPONSE -> {
                     currencyRatio = dataRemote.getCurrency()
-                    dataShared.saveCurrencyRate(currencyRatio, curToCur)
+                    dataShared.saveCurrencyRate(currencyRatio, curToCur!!)
                     viewModelStatus.postValue(RemoteStatus.RESPONSE)
                 }
                 RemoteStatus.ERROR -> {
-                    currencyRatio = dataShared.getCurrencyRate(curToCur)
+                    currencyRatio = dataShared.getCurrencyRate(curToCur!!)
                     if (currencyRatio == 0f) {
                         viewModelStatus.postValue(RemoteStatus.ERROR)
                     } else {
@@ -68,6 +71,10 @@ class MainViewModel : ViewModel() {
         else{
             return "%.2f".format(numb)
         }
+    }
+
+     fun setDestroyStatus(){
+        viewModelStatus.value=RemoteStatus.DESTROY
     }
 }
 

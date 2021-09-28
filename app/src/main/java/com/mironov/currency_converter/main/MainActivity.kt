@@ -12,6 +12,7 @@ import com.mironov.currency_converter.CustomAdapter
 import com.mironov.currency_converter.R
 import com.mironov.currency_converter.data.RemoteStatus
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,6 +30,10 @@ class MainActivity : AppCompatActivity() {
     private var currencyRate: Float = 0f
     lateinit var curTo: String
     lateinit var curFrom: String
+    val curNamesMap: HashMap<String, Int> = object : HashMap<String, Int>(){}
+
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,13 +84,26 @@ class MainActivity : AppCompatActivity() {
             R.drawable.ic_eur,
             R.drawable.ic_php
         )
+
+
         val stringArray = resources.getStringArray(R.array.currency_variants)
+        val counter = AtomicInteger(0)
+
+        stringArray.forEach { str ->
+            curNamesMap[str] = counter.getAndIncrement()
+        }
+
         val mCustomAdapter =
             CustomAdapter(this@MainActivity, stringArray, spinnerImages)
         //Spinner From
         spinnerFrom.adapter = mCustomAdapter
         spinnerFrom.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                i: Int,
+                l: Long
+            ) {
                 curFrom = stringArray[i]
             }
 
@@ -97,7 +115,12 @@ class MainActivity : AppCompatActivity() {
         //Spinner To
         spinnerTo.adapter = mCustomAdapter
         spinnerTo.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                i: Int,
+                l: Long
+            ) {
                 curTo = stringArray[i]
             }
 
@@ -141,8 +164,21 @@ class MainActivity : AppCompatActivity() {
                 RemoteStatus.LOADING -> {
                     progressBar.visibility = View.VISIBLE
                 }
+                RemoteStatus.DESTROY -> {
+                    if(viewModel.getCurrenciesNames()!=null){
+                    curFrom = viewModel.getCurrenciesNames()!!.substringBefore("_")
+                    curTo = viewModel.getCurrenciesNames()!!.substringAfter("_")
+                    spinnerFrom.setSelection(curNamesMap[curFrom]!!)
+                    spinnerTo.setSelection(curNamesMap[curTo]!!)}
+
+                }
             }
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.setDestroyStatus()
     }
 }
